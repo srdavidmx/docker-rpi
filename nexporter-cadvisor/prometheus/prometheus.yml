@@ -4,20 +4,17 @@ global:
   # scrape_timeout is set to the global default (10s).
 
   external_labels:
-      monitor: 'my-project'
+      monitor: 'monitor-server'
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
-  - 'alert.rules'
-  # - "first.rules"
-  # - "second.rules"
-
+  - 'rules.yml'
+  
 alerting:
   alertmanagers:
   - scheme: http
     static_configs:
-    - targets:
-      - "alertmanager:9093"
+    - targets: ['alertmanager:9093']
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -35,3 +32,7 @@ scrape_configs:
     static_configs:
       - targets: ['node-exporter:9100']
 
+  - job_name: 'alert-manager'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['alertmanager:9093']
