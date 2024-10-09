@@ -1,0 +1,72 @@
+{{ define "telegram_message" }}
+	  {{ if gt (len .Alerts.Firing) 0 }}
+	  <b>🔥 {{ len .Alerts.Firing }} alert(s) firing:</b>
+	    {{ range .Alerts.Firing }} {{ template "telegram_alert_firing" .}} {{ end }} {{ end }}
+	  {{ if gt (len .Alerts.Resolved) 0 }}
+	  <b>✅ {{ len .Alerts.Resolved }} alert(s) resolved:</b>
+	    {{ range .Alerts.Resolved }} {{ template "telegram_alert_resolved" .}} {{ end }} {{ end }}
+	{{ end }}
+
+	{{ define "telegram_alert_firing" }}
+	  <b>Value = </b>
+	  {{- $value := .Values }}
+	  {{- if ne (printf "%.1f" $value.A) "0.0" }}
+	  {{- printf "%.1f" $value.A }}{{- end }}
+	  {{- if ne (printf "%.1f" $value.B) "0.0" }} {{- printf "%.1f" $value.B }}{{- end }}
+	  <b>Labels:</b>
+	  {{- if index .Labels "name" }}
+	  - Name = {{ index .Labels "name" }}
+	  {{- end }}
+	  {{- if index .Labels "instance" }}
+	  - IP = {{ index .Labels "instance" }}
+	  {{- end }}
+	  {{- if index .Labels "Severity" }}
+	  - Severity = {{ index .Labels "Severity" }}
+	  {{- end }}
+	  {{- if index .Labels "grafana_folder" }}
+	  - Grafana_folder = {{ index .Labels "grafana_folder" }}
+	  {{- end }}
+	  {{- if index .Labels "volume" }}
+	  - Volume = {{ index .Labels "volume" }}
+	  {{- end }}
+	  {{- if index .Labels "mountpoint" }}
+	  - Mountpoint = {{ index .Labels "mountpoint" }}
+	  {{- end }}
+	  {{- if index .Labels "job" }}
+	  - OS = {{ index .Labels "job" }}
+	  {{- end }}
+	  {{- if index .Labels "loc" }}
+	  - Location = {{ index .Labels "loc" }}
+	  {{- end }}
+	{{ end }}
+	{{ define "telegram_alert_resolved" }}
+	  <b>{{ .Labels.alertname }}</b>
+	  Node: <b>{{ .Annotations.Node }}</b>
+	  {{ .Annotations.AlertValues }}
+	  <b>Labels:</b>
+	  {{- if index .Labels "name" }}
+	  - Name = {{ index .Labels "name" }}
+	  {{- end }}
+	  {{- if index .Labels "instance" }}
+	  - IP = {{ index .Labels "instance" }}
+	  {{- end }}
+	  {{- if index .Labels "Severity" }}
+	  - Severity = {{ index .Labels "Severity" }}
+	  {{- end }}
+	  {{- if index .Labels "grafana_folder" }}
+	  - Grafana_folder = {{ index .Labels "grafana_folder" }}
+	  {{- end }}
+	  {{- if index .Labels "volume" }}
+	  - Volume = {{ index .Labels "volume" }}
+	  {{- end }}
+	  {{- if index .Labels "mountpoint" }}
+	  - Mountpoint = {{ index .Labels "mountpoint" }}
+	  {{- end }}
+	  {{- if index .Labels "job" }}
+	  - OS = {{ index .Labels "job" }}
+	  {{- end }}
+	  {{- if index .Labels "loc" }}
+	  - Location = {{ index .Labels "loc" }}
+	  {{- end }}
+	{{ end }}
+    

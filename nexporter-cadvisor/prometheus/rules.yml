@@ -1,0 +1,30 @@
+groups:
+- name: monitoring
+  rules:
+  # Alert for any instance that is unreachable for >2 minutes.
+  - alert: service_down
+    expr: up == 0
+    for: 2m
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
+
+  - alert: high_ram_usage
+    expr: node_memory_Active_bytes/node_memory_MemTotal_bytes*100 > 60
+    for: 3m
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Instance {{ $labels.instance }} high ram usage"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} is high ram usage."
+
+  - alert: high_cpu_usage
+    expr: 100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[3m]))) > 60
+    for: 3m
+    labels:
+      severity: 'warning'
+    annotations:
+      sumary: "Instance { $labels.instance }} high cpu usage."
+      description: "{{ $labels.instance }} of job {{ $labels.job }} is high cpu usage."
